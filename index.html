@@ -23,56 +23,93 @@
       th {
         background-color: #f5f5f5;
       }
+      p,
+      h1 {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
     </style>
   </head>
 
   <body>
     <h1>Pre-move vulnerability analysis</h1>
-    <textarea
-      id="pgnInput"
-      rows="10"
-      cols="50"
-      placeholder="Paste your PGN data here (include move timestamps)"
-    ></textarea>
-    <button onclick="analyze()">Analyze</button>
 
-    <label for="stockfishDepth">Stockfish Depth:</label>
-    <input type="number" id="stockfishDepth" value="13" min="1" />
+    <p>
+      In the fast-paced realm of online chess, especially in blitz and bullet
+      time controls, every second counts. Players save time by "pre-moving," an
+      online-only feature that allows them to commit to a move in advance, so
+      that as soon as their opponent moves, their pre-selected move is
+      automatically executed at superhuman speed.
+    </p>
 
-    <label for="skipOpening">Skip the opening:</label>
-    <input id="skipOpening" type="checkbox" checked />
+    <p>
+      While pre-moving is a key part of the game, it's not without risks. A
+      pre-move operates under the assumption that the opponent will play a
+      particular move. If the opponent deviates from what's expected, the
+      pre-move could lead to suboptimal or even disastrous positions.
+    </p>
 
-    <label for="chess-com-user">Chess.com username</label>
-    <input type="text" id="chess-com-user" value="hikaru" />
+    <p>
+      Are the top players disciplined with their pre-moves, or could a lucky
+      opponent gain an illicit advantage? Play with the tool below to find out
+      by pasting PGN into the box. If you're just browsing, you can also load a
+      random game from chess.com using this form:
+    </p>
 
-    <select id="yearSelect">
-      <option value="2023">2023</option>
-      <option value="2022">2022</option>
-      <option value="2021">2021</option>
-      <option value="2020">2021</option>
-    </select>
+    <p>
+      <label for="chess-com-user">Chess.com username:</label>
+      <input type="text" id="chess-com-user" value="hikaru" />
 
-    <select id="monthSelect">
-      <option value="01">January</option>
-      <option value="02">February</option>
-      <option value="03">March</option>
-      <option value="04">April</option>
-      <option value="05">May</option>
-      <option value="06">June</option>
-      <option value="07">July</option>
-      <option value="08">August</option>
-      <option value="09">September</option>
-      <option value="10">October</option>
-      <option value="11">November</option>
-      <option value="12">December</option>
-    </select>
+      <select id="yearSelect">
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2021</option>
+      </select>
 
-    <button onclick="loadRandomGame()">Load a random bullet game</button>
+      <select id="monthSelect">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+
+      <button onclick="loadRandomGame()">Load a random bullet game</button>
+    </p>
+
+    <br />
+    <p>
+      <textarea
+        id="pgnInput"
+        rows="10"
+        cols="50"
+        placeholder="Paste your PGN data here (must include timestamps using [%clk ... ])"
+      ></textarea>
+    </p>
+    <p>
+      <label for="stockfishDepth">Stockfish Depth:</label>
+      <input type="number" id="stockfishDepth" value="13" min="1" />
+
+      <label for="skipOpening">Skip the opening:</label>
+      <input id="skipOpening" type="checkbox" checked />
+      <button onclick="analyze()">Analyze</button>
+    </p>
+
+    <br />
 
     <table id="resultsTable">
       <thead>
         <tr>
-          <th>Premove</th>
+          <th>Pre-move</th>
           <th>Move</th>
           <th>Risk</th>
           <th>Advantage</th>
