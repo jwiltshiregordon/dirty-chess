@@ -126,9 +126,8 @@ async function loadRandomGame() {
     );
     const data = await response.json();
 
-    // Filter out bullet games
     const bulletGames = data.games.filter(
-      (game) => game.time_class === "bullet"
+      (game) => game.time_class === "bullet" || game.time_class === "blitz"
     );
 
     // Select a random game from the filtered bullet games
@@ -137,7 +136,7 @@ async function loadRandomGame() {
 
     pgnInput.value = randomGame
       ? randomGame.pgn
-      : "No bullet games found for the selected user, month, and year.";
+      : "No bullet or blitz games found for the selected user, month, and year.";
   } catch (error) {
     console.error("Error fetching games:", error);
     pgnInput.value = "Error fetching games. Please try again later.";
