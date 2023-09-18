@@ -1,5 +1,4 @@
 let stockfish = new Worker("js/stockfish.js");
-const DEFAULT_DEPTH = 13;
 
 const infoMessage = function (event) {
   console.log("Stockfish says:", event.data);
@@ -16,8 +15,14 @@ function logMessage(message) {
   messagesDiv.appendChild(newLine);
 }
 
-async function getStockfishEvaluation(fen, depth) {
+function clearMessages() {
+  const messagesDiv = document.getElementById("messages");
+  messagesDiv.innerHTML = "";
+}
+
+async function getStockfishEvaluation(fen) {
   return new Promise((resolve, reject) => {
+    const depth = document.getElementById("stockfishDepth").value;
     let scores = [];
     stockfish.onmessage = function (event) {
       if (event.data.startsWith("info")) {
@@ -68,7 +73,7 @@ async function getReasonableMoves(fen, depth) {
   return reasonableMoves;
 }
 
-async function exploitPremove(fen, expected, premove, depth = DEFAULT_DEPTH) {
+async function exploitPremove(fen, expected, premove) {
   const game = new Chess(fen);
   const legalMoves = game.moves();
 
@@ -81,7 +86,7 @@ async function exploitPremove(fen, expected, premove, depth = DEFAULT_DEPTH) {
 
     // Check if the premove is still legal
     if (game.move(premove)) {
-      const evaluation = await getStockfishEvaluation(game.fen(), depth);
+      const evaluation = await getStockfishEvaluation(game.fen());
       if (move === expected) {
         expectedEval = evaluation;
       }
@@ -99,7 +104,7 @@ async function exploitPremove(fen, expected, premove, depth = DEFAULT_DEPTH) {
   }
 
   game.move(bestMove);
-  const riskedEvaluation = await getStockfishEvaluation(game.fen(), depth);
+  const riskedEvaluation = await getStockfishEvaluation(game.fen());
 
   return {
     move: bestMove,
@@ -118,10 +123,15 @@ async function analyze() {
   // Clear previous results
   tableBody.innerHTML = "";
 
-  logMessage("Starting search");
+  const skipOpening = document.getElementById("skipOpening").checked;
+  clearMessages();
+  logMessage(`Detected ${premoves.length} pre-moves`);
   for (let j = 0; j < premoves.length; j++) {
     logMessage(`Considering ${j + 1}/${premoves.length}`);
     const i = premoves[j];
+    if (skipOpening && i < 10) {
+      continue;
+    }
     const fen = fens[i - 1];
     const premove = moves[i];
     const expected = moves[i - 1];
@@ -148,5 +158,6 @@ async function analyze() {
       newRow.insertCell().textContent = message;
     }
   }
+  clearMessages();
   logMessage("Analysis complete");
 }
