@@ -106,10 +106,10 @@ function loadPGN() {
 }
 
 function moveName(moveIndex, moveAlgebra) {
-  if(moveIndex % 2 === 0) {
-    return `${moveIndex / 2 + 1}. ${moveAlgebra}`
+  if (moveIndex % 2 === 0) {
+    return `${moveIndex / 2 + 1}. ${moveAlgebra}`;
   } else {
-    return `${(moveIndex - 1) / 2 + 1}. ... ${moveAlgebra}`
+    return `${(moveIndex - 1) / 2 + 1}. ... ${moveAlgebra}`;
   }
 }
 
@@ -120,19 +120,25 @@ async function loadRandomGame() {
   const pgnInput = document.getElementById("pgnInput");
 
   try {
-    const response = await fetch(`https://api.chess.com/pub/player/${user}/games/${year}/${month}`);
+    const response = await fetch(
+      `https://api.chess.com/pub/player/${user}/games/${year}/${month}`
+    );
     const data = await response.json();
 
     // Filter out bullet games
-    const bulletGames = data.games.filter(game => game.time_class === 'bullet');
+    const bulletGames = data.games.filter(
+      (game) => game.time_class === "bullet"
+    );
 
     // Select a random game from the filtered bullet games
-    const randomGame = bulletGames[Math.floor(Math.random() * bulletGames.length)];
+    const randomGame =
+      bulletGames[Math.floor(Math.random() * bulletGames.length)];
 
-    pgnInput.value = randomGame ? randomGame.pgn : "No bullet games found for the selected month and year.";
-
+    pgnInput.value = randomGame
+      ? randomGame.pgn
+      : "No bullet games found for the selected month and year.";
   } catch (error) {
-    console.error('Error fetching games:', error);
+    console.error("Error fetching games:", error);
     pgnInput.value = "Error fetching games. Please try again later.";
   }
 }

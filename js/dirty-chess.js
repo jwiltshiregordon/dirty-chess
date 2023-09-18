@@ -9,6 +9,13 @@ stockfish.onmessage = infoMessage;
 // Ask stockfish for UCI mode
 stockfish.postMessage("uci");
 
+function logMessage(message) {
+  const messagesDiv = document.getElementById("messages");
+  const newLine = document.createElement("div");
+  newLine.textContent = message;
+  messagesDiv.appendChild(newLine);
+}
+
 async function getStockfishEvaluation(fen, depth) {
   return new Promise((resolve, reject) => {
     let scores = [];
@@ -104,41 +111,42 @@ async function exploitPremove(fen, expected, premove, depth = DEFAULT_DEPTH) {
 }
 
 async function analyze() {
-    const pgnInfo = loadPGN();
-    const { moves, fens, premoves } = pgnInfo;
-    const tableBody = document.querySelector("#resultsTable tbody");
+  const pgnInfo = loadPGN();
+  const { moves, fens, premoves } = pgnInfo;
+  const tableBody = document.querySelector("#resultsTable tbody");
 
-    // Clear previous results
-    tableBody.innerHTML = '';
+  // Clear previous results
+  tableBody.innerHTML = "";
 
-    console.log("Starting search");
-    for (let j = 0; j < premoves.length; j++) {
-        console.log(`Considering ${j + 1}/${premoves.length}`);
-        const i = premoves[j];
-        const fen = fens[i - 1];
-        const premove = moves[i];
-        const expected = moves[i - 1];
-        const exploitation = await exploitPremove(fen, expected, premove);
+  logMessage("Starting search");
+  for (let j = 0; j < premoves.length; j++) {
+    logMessage(`Considering ${j + 1}/${premoves.length}`);
+    const i = premoves[j];
+    const fen = fens[i - 1];
+    const premove = moves[i];
+    const expected = moves[i - 1];
+    const exploitation = await exploitPremove(fen, expected, premove);
 
-        if (!exploitation.expected) {
-            const risked =
-                exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
-            const advantage =
-                exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
-            const message = [
-                `Premove ${moveName(i, premove)} was vulnerable to `,
-                `${moveName(i - 1, exploitation.move)}. `,
-                `This ploy risks ${risked} centipawns to extract a ${advantage} `,
-                `centipawn advantage.`,
-            ].join("");
+    if (!exploitation.expected) {
+      const risked =
+        exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
+      const advantage =
+        exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
+      const message = [
+        `Premove ${moveName(i, premove)} was vulnerable to `,
+        `${moveName(i - 1, exploitation.move)}. `,
+        `This ploy risks ${risked} centipawns to extract a ${advantage} `,
+        `centipawn advantage.`,
+      ].join("");
 
-            // Add a new row to the table
-            const newRow = tableBody.insertRow();
-            newRow.insertCell().textContent = moveName(i, premove);
-            newRow.insertCell().textContent = moveName(i - 1, exploitation.move);
-            newRow.insertCell().textContent = risked;
-            newRow.insertCell().textContent = advantage;
-            newRow.insertCell().textContent = message;
-        }
+      // Add a new row to the table
+      const newRow = tableBody.insertRow();
+      newRow.insertCell().textContent = moveName(i, premove);
+      newRow.insertCell().textContent = moveName(i - 1, exploitation.move);
+      newRow.insertCell().textContent = risked;
+      newRow.insertCell().textContent = advantage;
+      newRow.insertCell().textContent = message;
     }
+  }
+  logMessage("Analysis complete");
 }

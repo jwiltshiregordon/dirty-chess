@@ -1,85 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Premove vulnerability analysis</title>
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-            font-family: 'Courier New', Courier, monospace; /* This sets the monospace font */
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        th {
-            background-color: #f5f5f5;
-        }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        font-family: "Courier New", Courier, monospace; /* This sets the monospace font */
+      }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+      th {
+        background-color: #f5f5f5;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <textarea id="pgnInput" rows="10" cols="50" placeholder="Paste your PGN data here (include move timestamps)"></textarea>
+  <body>
+    <textarea
+      id="pgnInput"
+      rows="10"
+      cols="50"
+      placeholder="Paste your PGN data here (include move timestamps)"
+    ></textarea>
     <button onclick="analyze()">Analyze</button>
 
     <label for="stockfishDepth">Stockfish Depth:</label>
-    <input type="number" id="stockfishDepth" value="13" min="1">
+    <input type="number" id="stockfishDepth" value="13" min="1" />
 
-    <input type="text" id="chess-com-user" value="hikaru">
+    <input type="text" id="chess-com-user" value="hikaru" />
 
     <select id="yearSelect">
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-        <option value="2020">2021</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2021</option>
     </select>
 
     <select id="monthSelect">
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
+      <option value="01">January</option>
+      <option value="02">February</option>
+      <option value="03">March</option>
+      <option value="04">April</option>
+      <option value="05">May</option>
+      <option value="06">June</option>
+      <option value="07">July</option>
+      <option value="08">August</option>
+      <option value="09">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
     </select>
 
     <button onclick="loadRandomGame()">Load a random bullet game</button>
 
-    <div id="backendMessages" style="margin-top: 20px; color: darkblue;"></div>
-
     <table id="resultsTable">
-        <thead>
-            <tr>
-                <th>Premove</th>
-                <th>Move</th>
-                <th>Risk</th>
-                <th>Advantage</th>
-                <th>Message</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Rows will be added here by the JavaScript code -->
-        </tbody>
+      <thead>
+        <tr>
+          <th>Premove</th>
+          <th>Move</th>
+          <th>Risk</th>
+          <th>Advantage</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be added here by the JavaScript code -->
+      </tbody>
     </table>
 
+    <div id="messages" style="margin-top: 20px; color: darkblue"></div>
 
     <script src="js/chess.min.js"></script>
     <script src="js/util.js"></script>
     <script src="js/dirty-chess.js"></script>
-</body>
-
+  </body>
 </html>
