@@ -1,13 +1,8 @@
 # Dirty Chess
 
-In online chess, in order to conserve time, players may lock in a move they've already decided to play.
-This is called "premoving" and it's a key part of online chess in short time controls.
+Dirty chess moves are wildly underused at the top level of chess, and as a result, top players
+are vulnerable. This repo is a preliminary
+systematic study of smarmy tactics and sleazy strategies.
 
-Premoving carries risks, however. A disciplined premove is one that you want to play no matter
-what your opponent's move turns out to be. A speculative premove may rest on an assumption about
-your opponent's move.
-
-How often are players making risky premoves? This tool lets you analyze games to detect
-missed premove vulnerabilities.
-
-## Predicting premoves
+Try it here 
+[https://jwiltshiregordon.github.io/dirty-chess/](https://jwiltshiregordon.github.io/dirty-chess/)
