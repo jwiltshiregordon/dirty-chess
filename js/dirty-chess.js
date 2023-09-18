@@ -90,15 +90,14 @@ async function exploitPremove(fen, expected, premove, depth = 15) {
     game.load(fen);
   }
 
-  game.move(bestMove)
+  game.move(bestMove);
   const riskedEvaluation = await getStockfishEvaluation(game.fen(), depth);
 
   return {
     move: bestMove,
     evaluation: bestEval,
     expected: expected === bestMove,
-    advantage: bestEval.cp - expectedEval.cp,
-    expectedEvaluation: expectedEval.cp,
+    expectedEvaluation: expectedEval,
     riskedEvaluation: riskedEvaluation,
   };
 }
@@ -114,14 +113,21 @@ async function analyze() {
     const expected = moves[i - 1];
     const exploitation = await exploitPremove(fen, expected, premove);
 
-    if(exploitation.expected) {
-      console.log(`no vulnerability for premove #${j + 1}/${premoves.length}`)
+    console.log(`Premove #${j + 1}/${premoves.length}`);
+    if (exploitation.expected) {
+      console.log(`No vulnerability`);
     } else {
-      console.log(exploitation)
-      const cpRiskDelta = exploitation.expectedEvaluation + exploitation.riskedEvaluation.cp
-      const message = `Premove ${moveName(i, premove)} was vulnerable to ${moveName(i - 1, exploitation.move)}. This move risks ${cpRiskDelta} centipawns to gain ${exploitation.advantage}`
-      console.log(message)
+      const risked =
+        exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
+      const advantage =
+        exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
+      const message = [
+        `Premove ${moveName(i, premove)} was vulnerable to`,
+        `${moveName(i - 1, exploitation.move)}.`,
+        `This move risks ${risked} centipawns to gain a ${advantage}`,
+        `centipawn advantage.`,
+      ].join("");
+      console.log(message);
     }
-
   }
 }
