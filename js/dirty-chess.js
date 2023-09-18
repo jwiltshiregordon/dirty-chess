@@ -1,4 +1,5 @@
 let stockfish = new Worker("js/stockfish.js");
+const DEFAULT_DEPTH = 13;
 
 const infoMessage = function (event) {
   console.log("Stockfish says:", event.data);
@@ -60,7 +61,7 @@ async function getReasonableMoves(fen, depth) {
   return reasonableMoves;
 }
 
-async function exploitPremove(fen, expected, premove, depth = 15) {
+async function exploitPremove(fen, expected, premove, depth = DEFAULT_DEPTH) {
   const game = new Chess(fen);
   const legalMoves = game.moves();
 
@@ -103,31 +104,41 @@ async function exploitPremove(fen, expected, premove, depth = 15) {
 }
 
 async function analyze() {
-  const pgnInfo = loadPGN();
-  const { moves, fens, premoves } = pgnInfo;
-  console.log("Starting search");
-  for (let j = 0; j < premoves.length; j++) {
-    const i = premoves[j];
-    const fen = fens[i - 1];
-    const premove = moves[i];
-    const expected = moves[i - 1];
-    const exploitation = await exploitPremove(fen, expected, premove);
+    const pgnInfo = loadPGN();
+    const { moves, fens, premoves } = pgnInfo;
+    const tableBody = document.querySelector("#resultsTable tbody");
 
-    console.log(`Premove #${j + 1}/${premoves.length}`);
-    if (exploitation.expected) {
-      console.log(`No vulnerability`);
-    } else {
-      const risked =
-        exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
-      const advantage =
-        exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
-      const message = [
-        `Premove ${moveName(i, premove)} was vulnerable to `,
-        `${moveName(i - 1, exploitation.move)}. `,
-        `This move risks ${risked} centipawns to gain a ${advantage} `,
-        `centipawn advantage.`,
-      ].join("");
-      console.log(message);
+    // Clear previous results
+    tableBody.innerHTML = '';
+
+    console.log("Starting search");
+    for (let j = 0; j < premoves.length; j++) {
+        console.log(`Considering ${j + 1}/${premoves.length}`);
+        const i = premoves[j];
+        const fen = fens[i - 1];
+        const premove = moves[i];
+        const expected = moves[i - 1];
+        const exploitation = await exploitPremove(fen, expected, premove);
+
+        if (!exploitation.expected) {
+            const risked =
+                exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
+            const advantage =
+                exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
+            const message = [
+                `Premove ${moveName(i, premove)} was vulnerable to `,
+                `${moveName(i - 1, exploitation.move)}. `,
+                `This ploy risks ${risked} centipawns to extract a ${advantage} `,
+                `centipawn advantage.`,
+            ].join("");
+
+            // Add a new row to the table
+            const newRow = tableBody.insertRow();
+            newRow.insertCell().textContent = moveName(i, premove);
+            newRow.insertCell().textContent = moveName(i - 1, exploitation.move);
+            newRow.insertCell().textContent = risked;
+            newRow.insertCell().textContent = advantage;
+            newRow.insertCell().textContent = message;
+        }
     }
-  }
 }
