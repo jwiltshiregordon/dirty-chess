@@ -112,3 +112,27 @@ function moveName(moveIndex, moveAlgebra) {
     return `${(moveIndex - 1) / 2 + 1}. ... ${moveAlgebra}`
   }
 }
+
+async function loadRandomGame() {
+  const user = document.getElementById("chess-com-user").value;
+  const year = document.getElementById("yearSelect").value;
+  const month = document.getElementById("monthSelect").value;
+  const pgnInput = document.getElementById("pgnInput");
+
+  try {
+    const response = await fetch(`https://api.chess.com/pub/player/${user}/games/${year}/${month}`);
+    const data = await response.json();
+
+    // Filter out bullet games
+    const bulletGames = data.games.filter(game => game.time_class === 'bullet');
+
+    // Select a random game from the filtered bullet games
+    const randomGame = bulletGames[Math.floor(Math.random() * bulletGames.length)];
+
+    pgnInput.value = randomGame ? randomGame.pgn : "No bullet games found for the selected month and year.";
+
+  } catch (error) {
+    console.error('Error fetching games:', error);
+    pgnInput.value = "Error fetching games. Please try again later.";
+  }
+}

@@ -122,9 +122,9 @@ async function analyze() {
       const advantage =
         exploitation.evaluation.cp - exploitation.expectedEvaluation.cp;
       const message = [
-        `Premove ${moveName(i, premove)} was vulnerable to`,
-        `${moveName(i - 1, exploitation.move)}.`,
-        `This move risks ${risked} centipawns to gain a ${advantage}`,
+        `Premove ${moveName(i, premove)} was vulnerable to `,
+        `${moveName(i - 1, exploitation.move)}. `,
+        `This move risks ${risked} centipawns to gain a ${advantage} `,
         `centipawn advantage.`,
       ].join("");
       console.log(message);
