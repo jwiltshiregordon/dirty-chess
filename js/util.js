@@ -118,6 +118,7 @@ async function loadRandomGame() {
   const year = document.getElementById("yearSelect").value;
   const month = document.getElementById("monthSelect").value;
   const pgnInput = document.getElementById("pgnInput");
+  pgnInput.value = "Loading a random game";
 
   try {
     const response = await fetch(
@@ -136,7 +137,7 @@ async function loadRandomGame() {
 
     pgnInput.value = randomGame
       ? randomGame.pgn
-      : "No bullet games found for the selected month and year.";
+      : "No bullet games found for the selected user, month, and year.";
   } catch (error) {
     console.error("Error fetching games:", error);
     pgnInput.value = "Error fetching games. Please try again later.";
