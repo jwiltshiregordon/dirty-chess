@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pre-move vulnerability analysis</title>
+    <title>Risky Chess Detector</title>
     <style>
       table {
         border-collapse: collapse;
@@ -31,132 +31,157 @@
         margin-left: auto;
         margin-right: auto;
       }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        /* Replace 'main' with the main content container's selector */
+        flex: 1 0 auto;
+      }
+
+      footer {
+        flex-shrink: 0; /* prevents the footer from shrinking */
+      }
     </style>
   </head>
 
   <body>
-    <h1>Risky pre-moves in online chess</h1>
-    <h3>
-      Are the top players disciplined, or could a daring opponent predict and
-      exploit their pre-moves?
-    </h3>
+    <main>
+      <h1>Risky pre-moves in online chess</h1>
+      <h3>
+        Are the top players disciplined, or could a daring opponent predict and
+        exploit their pre-moves?
+      </h3>
 
-    <p>
-      In online chess, especially in blitz and bullet time controls, players
-      save time by "pre-moving," selecting a move to be executed automatically
-      as soon as their opponent moves.
-    </p>
+      <p>
+        In online chess, especially in blitz and bullet time controls, players
+        save time by "pre-moving," selecting a move to be executed automatically
+        as soon as their opponent moves.
+      </p>
 
-    <p>
-      While pre-moving is a key part of the game, it's not without risks. A
-      pre-move operates under the assumption that the opponent will play a
-      particular move. If the opponent deviates from what's expected, the
-      pre-move could lead to suboptimal or even disastrous positions.
-    </p>
+      <p>
+        While pre-moving is a key part of the game, it's not without risks. A
+        pre-move operates under the assumption that the opponent will play a
+        particular move. If the opponent deviates from what's expected, the
+        pre-move could lead to suboptimal or even disastrous positions.
+      </p>
 
-    <p>
-      The PGN for an online game often includes timestamps for all the moves, so
-      we can pretty-well guess which moves were pre-moves. On chess.com, for
-      example, a time delta of 0.1 second indicates a pre-move. This tool
-      analyzes each detected pre-move to check if the opponent could have played
-      something unexpected to improve their position.
-    </p>
+      <p>
+        The PGN for an online game often includes timestamps for all the moves,
+        so we can pretty-well guess which moves were pre-moves. On chess.com,
+        for example, a time delta of 0.1 second indicates a pre-move. This tool
+        analyzes each detected pre-move to check if the opponent could have
+        played something unexpected to improve their position.
+      </p>
 
-    <p>
-      Play with the tool below to find out by pasting PGN into the box. You can
-      also load a random game from chess.com using this form:
-    </p>
+      <p>
+        Play with the tool below to find out by pasting PGN into the box. You
+        can also load a random game from chess.com using this form:
+      </p>
 
-    <p>
-      <label for="chess-com-user">Chess.com username:</label>
-      <input type="text" id="chess-com-user" value="hikaru" />
+      <p>
+        <label for="chess-com-user">Chess.com username:</label>
+        <input type="text" id="chess-com-user" value="hikaru" />
 
-      <select id="yearSelect">
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-        <option value="2020">2021</option>
-      </select>
+        <select id="yearSelect">
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2021</option>
+        </select>
 
-      <select id="monthSelect">
-        <option value="01">January</option>
-        <option value="02">February</option>
-        <option value="03">March</option>
-        <option value="04">April</option>
-        <option value="05">May</option>
-        <option value="06">June</option>
-        <option value="07">July</option>
-        <option value="08">August</option>
-        <option value="09">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-      </select>
+        <select id="monthSelect">
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
 
-      <button onclick="loadRandomGame()">
-        Load a random bullet/blitz game
-      </button>
-    </p>
-    <p>
-      You can also
-      <a href="gallery.html">visit the gallery of recent examples</a>. Thank you
-      to my chess-playing friend Lukus Stricker for helping find interesting
-      games.
-    </p>
+        <button onclick="loadRandomGame()">
+          Load a random bullet/blitz game
+        </button>
+      </p>
+      <p>
+        You can also
+        <a href="gallery.html">visit the gallery of recent examples</a>. Thank
+        you to my chess-playing friend
+        <a href="https://www.linkedin.com/in/lukus-stricker-014496174/"
+          >Lukus Stricker</a
+        >
+        for helping find interesting games.
+      </p>
 
-    <br />
-    <h2>Pre-move vulnerability analysis tool</h2>
+      <br />
+      <h2>Pre-move vulnerability analysis tool</h2>
 
-    <p>
-      The tool runs <a href="https://stockfishchess.org/">stockfish</a> 10 in
-      the browser using
-      <a href="https://github.com/nmrugg/stockfish.js">stockfish.js</a>. PGNs
-      are processed using
-      <a href="https://github.com/jhlywa/chess.js/tree/master">chess.js</a>.
-    </p>
-    <p>
-      <textarea
-        id="pgnInput"
-        rows="10"
-        cols="50"
-        placeholder="Paste your PGN data here (must include timestamps using [%clk ... ])"
-        style="width: 800px"
-      ></textarea>
-    </p>
-    <p>
-      <label for="stockfishDepth">Stockfish Depth:</label>
-      <input type="number" id="stockfishDepth" value="13" min="1" />
+      <p>
+        The tool runs <a href="https://stockfishchess.org/">stockfish</a> 10 in
+        the browser using
+        <a href="https://github.com/nmrugg/stockfish.js">stockfish.js</a>. PGNs
+        are processed using
+        <a href="https://github.com/jhlywa/chess.js">chess.js</a>.
+      </p>
+      <p>
+        <textarea
+          id="pgnInput"
+          rows="10"
+          cols="50"
+          placeholder="Paste your PGN data here (must include timestamps using [%clk ... ])"
+          style="width: 800px"
+        ></textarea>
+      </p>
+      <p>
+        <label for="stockfishDepth">Stockfish Depth:</label>
+        <input type="number" id="stockfishDepth" value="13" min="1" />
 
-      <label for="skipOpening">Skip the opening:</label>
-      <input id="skipOpening" type="checkbox" checked />
-      <button onclick="analyze()">Analyze</button>
-    </p>
+        <label for="skipOpening">Skip the opening:</label>
+        <input id="skipOpening" type="checkbox" checked />
+        <button onclick="analyze()">Analyze</button>
+      </p>
 
-    <br />
+      <br />
 
-    <table id="resultsTable">
-      <thead>
-        <tr>
-          <th>Pre-move</th>
-          <th>Move</th>
-          <th>Risk</th>
-          <th>Advantage</th>
-          <th>Message</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Rows will be added here by the JavaScript code -->
-      </tbody>
-    </table>
+      <table id="resultsTable" style="display: none">
+        <thead>
+          <tr>
+            <th>Pre-move</th>
+            <th>Move</th>
+            <th>Risk</th>
+            <th>Advantage</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added here by the JavaScript code -->
+        </tbody>
+      </table>
 
-    <div id="messages" style="margin-top: 20px; color: darkblue"></div>
-
+      <div id="messages" style="margin-top: 20px; color: darkblue"></div>
+    </main>
     <footer>
       <p>About John Wiltshire-Gordon</p>
       <p>
-        I'm a mathematician-turned-software-engineer who's currently looking for
-        a job. I'm adaptable, I love to build, and I generate many, many ideas,
-        some of them good. Please get in touch if you need someone like me!
+        I'm a mathematician-turned-software-engineer who's
+        <b>currently looking for a job</b>. I'm adaptable, I love to build, and
+        I generate many, many ideas, some of them good. Please get in touch if
+        you need someone like me!
+      </p>
+      <p>
+        At my last job, I built the data science/LLM pipeline powering
+        <a href="TaxCredit.ai">TaxCredit.ai</a> which hooks into your company's
+        github and generates a "technical uncertainty" report justifying your
+        federal R&D tax credit.
       </p>
       <p>
         <a
@@ -178,7 +203,8 @@
           target="_blank"
           rel="noopener noreferrer"
           >LinkedIn</a
-        >
+        >|
+        <var>jwiltshiregordon "at" google's free email service</var>
       </p>
     </footer>
 

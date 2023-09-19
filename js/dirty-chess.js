@@ -118,6 +118,8 @@ async function exploitPremove(fen, expected, premove) {
 async function analyze() {
   const pgnInfo = loadPGN();
   const { moves, fens, premoves } = pgnInfo;
+  const resultsTable = document.getElementById("#resultsTable");
+  resultsTable.style = "";
   const tableBody = document.querySelector("#resultsTable tbody");
 
   // Clear previous results
