@@ -168,8 +168,6 @@ async function analyze() {
     }
   }
 
-  console.log(annotatedPGN); // Output the generated PGN to the console
-
   PGNV.pgnView("b1", { pgn: annotatedPGN });
 
   clearMessages();
@@ -178,4 +176,18 @@ async function analyze() {
       count === 1 ? "vulnerability" : "vulnerabilities"
     }.`
   );
+
+  const copyButton = document.createElement("button");
+  copyButton.textContent = "Copy annotated PGN to clipboard";
+  copyButton.addEventListener("click", function() {
+      navigator.clipboard.writeText(annotatedPGN)
+          .then(() => {
+              logMessage("PGN copied to clipboard");
+          })
+          .catch(err => {
+              logMessage("Failed to copy PGN: " + err);
+          });
+  });
+  document.getElementById("messages").appendChild(copyButton);
+
 }
