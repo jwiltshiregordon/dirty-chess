@@ -127,19 +127,25 @@
 
       <p>
         The tool runs <a href="https://stockfishchess.org/">stockfish</a> 10 in
-        the browser using
+        the browser using wasm and
         <a href="https://github.com/nmrugg/stockfish.js">stockfish.js</a>. PGNs
         are processed using
         <a href="https://github.com/jhlywa/chess.js">chess.js</a>
         and displayed using
-        <a href="https://github.com/mliebelt/PgnViewerJS">PgnViewerJS</a>.
+        <a href="https://github.com/mliebelt/PgnViewerJS">PgnViewerJS</a>. I
+        also learned from nice examples at
+        <a href="https://github.com/LabinatorSolutions/stockfish-chess-web-gui"
+          >stockfish-chess-web-gui</a
+        >, so thank you to
+        <a href="https://github.com/LabinatorSolutions">LabinatorSolutions</a>
+        for making them available.
       </p>
       <p>
         <textarea
           id="pgnInput"
           rows="10"
           cols="50"
-          placeholder="Paste your PGN data here (must include timestamps using [%clk ... ])"
+          placeholder="Paste your PGN here (must include timestamps using [%clk ... ])"
           style="width: 800px"
         ></textarea>
       </p>
