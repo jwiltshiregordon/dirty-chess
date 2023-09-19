@@ -24,7 +24,9 @@
         background-color: #f5f5f5;
       }
       p,
-      h1 {
+      h1,
+      h2,
+      h3 {
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -33,12 +35,16 @@
   </head>
 
   <body>
-    <h1>Pre-move vulnerability analysis</h1>
+    <h1>Risky pre-moves in online chess</h1>
+    <h3>
+      Are the top players disciplined, or could a daring opponent predict and
+      exploit their pre-moves?
+    </h3>
 
     <p>
-      In online chess, especially in blitz and bullet
-      time controls, every second counts. Players save time by "pre-moving,"
-      selecting a move to be executed automatically as soon as their opponent moves.
+      In online chess, especially in blitz and bullet time controls, players
+      save time by "pre-moving," selecting a move to be executed automatically
+      as soon as their opponent moves.
     </p>
 
     <p>
@@ -57,9 +63,7 @@
     </p>
 
     <p>
-      Are the top players disciplined with their pre-moves, or could a lucky
-      opponent gain an advantage by predicting them? Play with the tool below to
-      find out by pasting PGN into the box. If you're just browsing, you can
+      Play with the tool below to find out by pasting PGN into the box. You can
       also load a random game from chess.com using this form:
     </p>
 
@@ -89,19 +93,34 @@
         <option value="12">December</option>
       </select>
 
-      <button onclick="loadRandomGame()">Load a random bullet/blitz game</button>
+      <button onclick="loadRandomGame()">
+        Load a random bullet/blitz game
+      </button>
     </p>
     <p>
-      You can also <a href="gallery.html">visit the gallery of recent examples</a>
+      You can also
+      <a href="gallery.html">visit the gallery of recent examples</a>. Thank you
+      to my chess-playing friend Lukus Stricker for helping find interesting
+      games.
     </p>
 
     <br />
+    <h2>Pre-move vulnerability analysis tool</h2>
+
+    <p>
+      The tool runs <a href="https://stockfishchess.org/">stockfish</a> 10 in
+      the browser using
+      <a href="https://github.com/nmrugg/stockfish.js">stockfish.js</a>. PGNs
+      are processed using
+      <a href="https://github.com/jhlywa/chess.js/tree/master">chess.js</a>.
+    </p>
     <p>
       <textarea
         id="pgnInput"
         rows="10"
         cols="50"
         placeholder="Paste your PGN data here (must include timestamps using [%clk ... ])"
+        style="width: 800px"
       ></textarea>
     </p>
     <p>
@@ -131,6 +150,37 @@
     </table>
 
     <div id="messages" style="margin-top: 20px; color: darkblue"></div>
+
+    <footer>
+      <p>About John Wiltshire-Gordon</p>
+      <p>
+        I'm a mathematician-turned-software-engineer who's currently looking for
+        a job. I'm adaptable, I love to build, and I generate many, many ideas,
+        some of them good. Please get in touch if you need someone like me!
+      </p>
+      <p>
+        <a
+          href="https://github.com/jwiltshiregordon"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+        |
+        <a
+          href="https://jwiltshiregordon.github.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Personal Website</a
+        >
+        |
+        <a
+          href="https://www.linkedin.com/in/john-wiltshire-gordon/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >LinkedIn</a
+        >
+      </p>
+    </footer>
 
     <script src="js/chess.min.js"></script>
     <script src="js/util.js"></script>
