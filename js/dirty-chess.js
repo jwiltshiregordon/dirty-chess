@@ -51,28 +51,6 @@ async function getStockfishEvaluation(fen) {
   });
 }
 
-async function getReasonableMoves(fen, depth) {
-  const start = await getStockfishEvaluation(fen, depth);
-  const legalMoves = Chess(fen).moves();
-  const reasonableMoves = [];
-
-  for (const move of legalMoves) {
-    const game = Chess(fen);
-    game.move(move);
-    const option = await getStockfishEvaluation(game.fen(), depth);
-    console.log(
-      `considering ${move}. I'm currently at least ${
-        start.lo.cp
-      } and this move is best-case moving me to ${-option.lo.cp}`
-    );
-    console.log(option);
-    if (start.lo.cp < -option.lo.cp) {
-      reasonableMoves.push(move);
-    }
-  }
-  return reasonableMoves;
-}
-
 async function exploitPremove(fen, expected, premove) {
   const game = new Chess(fen);
   const legalMoves = game.moves();
@@ -114,10 +92,9 @@ async function exploitPremove(fen, expected, premove) {
     riskedEvaluation: riskedEvaluation,
   };
 }
-
 async function analyze() {
   const pgnInfo = loadPGN();
-  const { moves, fens, premoves } = pgnInfo;
+  const { moves, fens, premoves, header } = pgnInfo;
   const resultsTable = document.getElementById("resultsTable");
   resultsTable.style.display = "";
   const tableBody = document.querySelector("#resultsTable tbody");
@@ -128,6 +105,23 @@ async function analyze() {
   const skipOpening = document.getElementById("skipOpening").checked;
   clearMessages();
   logMessage(`Detected ${premoves.length} pre-moves`);
+
+  // Begin PGN generation
+  let annotatedPGN = header + "\n";
+
+  for (let i = 0; i < moves.length; i++) {
+    const move = moves[i];
+    if (premoves.includes(i)) {
+      // Add the move and the annotation indicating a pre-move
+      annotatedPGN += `${moveName(i, move)} {pre-move} `;
+    } else {
+      // Add the move without any annotation
+      annotatedPGN += moveName(i, move) + " ";
+    }
+  }
+
+  let count = 0;
+
   for (let j = 0; j < premoves.length; j++) {
     logMessage(`Considering ${j + 1}/${premoves.length}`);
     const i = premoves[j];
@@ -140,6 +134,7 @@ async function analyze() {
     const exploitation = await exploitPremove(fen, expected, premove);
 
     if (!exploitation.expected) {
+      count++;
       const risked =
         exploitation.expectedEvaluation.cp + exploitation.riskedEvaluation.cp;
       const advantage =
@@ -151,6 +146,18 @@ async function analyze() {
         `centipawn advantage.`,
       ].join("");
 
+      const variation = `${moveName(
+        i - 1,
+        exploitation.move
+      )} {anticipating pre-move} ${moveName(i, premove)} {pre-move, uh-oh}`;
+      const insertionPoint = moveName(i, "");
+
+      // Insert the variation
+      annotatedPGN = annotatedPGN.replace(
+        insertionPoint,
+        `(${variation}) ${insertionPoint}`
+      );
+
       // Add a new row to the table
       const newRow = tableBody.insertRow();
       newRow.insertCell().textContent = moveName(i, premove);
@@ -160,6 +167,15 @@ async function analyze() {
       newRow.insertCell().textContent = message;
     }
   }
+
+  console.log(annotatedPGN); // Output the generated PGN to the console
+
+  PGNV.pgnView("b1", { pgn: annotatedPGN });
+
   clearMessages();
-  logMessage("Analysis complete");
+  logMessage(
+    `Analysis complete; found ${count} ${
+      count === 1 ? "vulnerability" : "vulnerabilities"
+    }.`
+  );
 }

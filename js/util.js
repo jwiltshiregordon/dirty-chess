@@ -1,7 +1,3 @@
-function turnSign(fen) {
-  return fen.split(" ")[1][0] === "w" ? 1 : -1;
-}
-
 function parseUCI(uciString) {
   const result = {};
 
@@ -83,14 +79,9 @@ function detectPremoves(t) {
 }
 
 function loadPGN() {
-  const pgn = (document.getElementById("pgnInput").value || defaultPGN).replace(
-    "\n",
-    ""
-  );
+  const pgn = document.getElementById("pgnInput").value.replace("\n", "");
 
-  console.log("Received PGN:", pgn); // Log the input PGN for reference
   const clock = getClocks(pgn);
-  console.log(clock);
   const premoves = detectPremoves(clock);
 
   const chess = new Chess();
@@ -102,14 +93,20 @@ function loadPGN() {
   } else {
     console.log("PGN loaded successfully into chess.js");
   }
-  return { moves: chess.history(), fens: getMainLineFens(chess), premoves };
+  return {
+    moves: chess.history(),
+    fens: getMainLineFens(chess),
+    premoves,
+    clock,
+    header: pgn.slice(0, pgn.indexOf("\n1.")),
+  };
 }
 
 function moveName(moveIndex, moveAlgebra) {
   if (moveIndex % 2 === 0) {
     return `${moveIndex / 2 + 1}. ${moveAlgebra}`;
   } else {
-    return `${(moveIndex - 1) / 2 + 1}. ... ${moveAlgebra}`;
+    return `${(moveIndex - 1) / 2 + 1}... ${moveAlgebra}`;
   }
 }
 
@@ -118,7 +115,7 @@ async function loadRandomGame() {
   const year = document.getElementById("yearSelect").value;
   const month = document.getElementById("monthSelect").value;
   const pgnInput = document.getElementById("pgnInput");
-  pgnInput.value = "Loading a random game";
+  pgnInput.value = "Loading a random game...";
 
   try {
     const response = await fetch(
@@ -126,13 +123,11 @@ async function loadRandomGame() {
     );
     const data = await response.json();
 
-    const bulletGames = data.games.filter(
+    const games = data.games.filter(
       (game) => game.time_class === "bullet" || game.time_class === "blitz"
     );
 
-    // Select a random game from the filtered bullet games
-    const randomGame =
-      bulletGames[Math.floor(Math.random() * bulletGames.length)];
+    const randomGame = games[Math.floor(Math.random() * games.length)];
 
     pgnInput.value = randomGame
       ? randomGame.pgn
