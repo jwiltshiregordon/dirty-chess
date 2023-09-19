@@ -179,15 +179,15 @@ async function analyze() {
 
   const copyButton = document.createElement("button");
   copyButton.textContent = "Copy annotated PGN to clipboard";
-  copyButton.addEventListener("click", function() {
-      navigator.clipboard.writeText(annotatedPGN)
-          .then(() => {
-              logMessage("PGN copied to clipboard");
-          })
-          .catch(err => {
-              logMessage("Failed to copy PGN: " + err);
-          });
+  copyButton.addEventListener("click", function () {
+    navigator.clipboard
+      .writeText(annotatedPGN)
+      .then(() => {
+        logMessage("PGN copied to clipboard");
+      })
+      .catch((err) => {
+        logMessage("Failed to copy PGN: " + err);
+      });
   });
   document.getElementById("messages").appendChild(copyButton);
-
 }
