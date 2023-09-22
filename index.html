@@ -46,6 +46,33 @@
         flex-shrink: 0; /* prevents the footer from shrinking */
       }
     </style>
+    <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
+    <script src="https://unpkg.com/isomorphic-git@beta"></script>
+    <script type="module">
+    import http from 'https://unpkg.com/isomorphic-git@beta/http/web/index.js'
+    // Initialize isomorphic-git with a file system
+    window.fs = new LightningFS('fs', { wipe: true })
+    // I prefer using the Promisified version honestly
+    window.pfs = window.fs.promises
+    await window.pfs.mkdir("/source")
+    await git.clone({
+      fs,
+      http,
+      dir: '/source',
+      corsProxy: 'https://cors.isomorphic-git.org',
+      url: 'https://github.com/jwiltshiregordon/dirty-chess.git',
+      ref: 'main',
+      singleBranch: true,
+      noCheckout: true,
+      depth: 2
+    });
+
+    // Now it should not be empty...
+    let contents = await pfs.readdir("/source");
+    console.log("now have source")
+    console.log(contents)
+
+    </script>
   </head>
 
   <body>
