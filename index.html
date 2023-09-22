@@ -61,13 +61,12 @@
       dir: '/source',
       corsProxy: 'https://cors.isomorphic-git.org',
       url: 'https://github.com/jwiltshiregordon/dirty-chess.git',
-      ref: 'main',
+      ref: 'empty-branch',
       singleBranch: true,
       noCheckout: true,
-      depth: 2
+      depth: 1
     });
 
-    // Now it should not be empty...
     let contents = await pfs.readdir("/source");
     console.log("now have source")
     console.log(contents)
