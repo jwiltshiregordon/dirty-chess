@@ -72,6 +72,39 @@
     console.log(contents)
 
     </script>
+
+    <script>
+      function visitorLog(eventDetails) {
+        // Define the URL to which the request will be sent
+        const url = 'https://32vfihxmie.execute-api.us-east-1.amazonaws.com/dev/log';
+
+        // Create a payload with the GitHub repo details and the message to log
+        const payload = {
+          repo_name: 'dirty-chess',
+          repo_owner: 'jwiltshiregordon',
+          event_details: eventDetails
+        };
+
+        // Send the POST request
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Log the response data for debugging
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          // Log any errors for debugging
+          console.error('Error:', error);
+        });
+      }
+    </script>
+
   </head>
 
   <body>

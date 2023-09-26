@@ -166,6 +166,7 @@ async function analyze() {
       newRow.insertCell().textContent = advantage;
       newRow.insertCell().textContent = message;
     }
+    visitorLog(`Premoves count ${premoves.length} Header: ${header}`);
   }
 
   PGNV.pgnView("b1", { pgn: annotatedPGN });
