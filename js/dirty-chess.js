@@ -166,7 +166,6 @@ async function analyze() {
       newRow.insertCell().textContent = advantage;
       newRow.insertCell().textContent = message;
     }
-    logVisitorMessage(`Premoves count ${premoves.length} Header: ${header}`);
   }
 
   PGNV.pgnView("b1", { pgn: annotatedPGN });
@@ -177,6 +176,8 @@ async function analyze() {
       count === 1 ? "vulnerability" : "vulnerabilities"
     }.`
   );
+
+  logVisitorMessage(`vulnerability count ${count} Header: ${header}`);
 
   const copyButton = document.createElement("button");
   copyButton.textContent = "Copy annotated PGN to clipboard";
