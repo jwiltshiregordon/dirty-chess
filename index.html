@@ -74,36 +74,36 @@
     </script>
 
     <script>
-      function visitorLog(eventDetails) {
-        // Define the URL to which the request will be sent
-        const url = 'https://32vfihxmie.execute-api.us-east-1.amazonaws.com/dev/log';
+    function logVisitorMessage(event_details) {
+      const repoOwner = "jwiltshiregordon";
+      const repoName = "dirty-chess";
 
-        // Create a payload with the GitHub repo details and the message to log
-        const payload = {
-          repo_name: 'dirty-chess',
-          repo_owner: 'jwiltshiregordon',
-          event_details: eventDetails
-        };
+      const data = {
+        repo_owner: repoOwner,
+        repo_name: repoName,
+        event_details: event_details
+      };
 
-        // Send the POST request
-        fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          // Log the response data for debugging
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          // Log any errors for debugging
-          console.error('Error:', error);
-        });
-      }
-    </script>
+      fetch('https://api.github-pages-visitor-log.net/log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+            console.log('Message logged successfully:', data);
+        } else {
+            console.error('Error logging message:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
+    <script>
 
   </head>
 
