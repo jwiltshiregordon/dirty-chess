@@ -124,7 +124,7 @@ async function loadRandomGame() {
     const data = await response.json();
 
     const games = data.games.filter(
-      (game) => game.time_class === "bullet" || game.time_class === "blitz"
+      (game) => game.time_class === "bullet"// || game.time_class === "blitz"
     );
 
     const randomGame = games[Math.floor(Math.random() * games.length)];
